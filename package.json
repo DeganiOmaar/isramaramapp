@@ -1,0 +1,9 @@
+{
+  "name": "isramaramapp",
+  "private": true,
+  "scripts": {
+    "app": "node run-app.js",
+    "app:windows": "flutter run -d windows",
+    "app:macos": "flutter run -d macos"
+  }
+}

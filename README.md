@@ -1,16 +1,56 @@
 # isramaramapp
 
-A new Flutter project.
+Flutter app with auth. Runs on **Windows** and **macOS**.
 
-## Getting Started
+## Prerequisites
 
-This project is a starting point for a Flutter application.
+- [Flutter SDK](https://flutter.dev/docs/get-started/install)
+- **Windows:** Visual Studio 2022 with "Desktop development with C++" workload
+- **macOS:** Xcode (from App Store)
 
-A few resources to get you started if this is your first Flutter project:
+## Steps to Run
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### 1. Clone the repo
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+git clone https://github.com/DeganiOmaar/isramaramapp.git
+cd isramaramapp
+```
+
+### 2. Get dependencies
+
+```bash
+flutter pub get
+```
+
+### 3. Run the app
+
+**Auto-detect platform (recommended):**
+
+```bash
+npm run app
+```
+
+**Or run manually:**
+
+```bash
+# On Windows
+flutter run -d windows
+
+# On macOS
+flutter run -d macos
+```
+
+### 4. Backend
+
+The app connects to a backend API. Clone and run it separately:
+
+```bash
+git clone https://github.com/DeganiOmaar/isramaramback.git
+cd isramaramback
+npm install
+# Create .env with PORT, MONGO_URI, JWT_SECRET
+npm run dev
+```
+
+The app expects the backend at `http://127.0.0.1:3000/api`.

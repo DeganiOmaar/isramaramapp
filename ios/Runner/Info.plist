@@ -50,5 +50,9 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Autoriser l'accès aux photos pour ajouter des images aux produits</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Autoriser l'accès à la caméra pour prendre des photos des produits</string>
 </dict>
 </plist>

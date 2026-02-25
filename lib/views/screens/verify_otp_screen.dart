@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import '../../app_router.dart';
 import '../../controllers/auth_controller.dart';
 
@@ -24,26 +24,21 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
 
   Future<void> _verify() async {
     if (!_formKey.currentState!.validate()) return;
-    final auth = context.read<AuthController>();
+    final auth = Get.find<AuthController>();
     final err = await auth.verifyOtp(widget.email, _otpController.text.trim());
     if (!mounted) return;
     if (err != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(err), backgroundColor: Colors.red),
-      );
+      Get.snackbar('Erreur', err, backgroundColor: Colors.red.shade100);
     } else {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const AppRouter()),
-        (route) => false,
-      );
+      Get.offAll(() => const AppRouter());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthController>();
-    return Scaffold(
+    return Obx(() {
+      final auth = Get.find<AuthController>();
+      return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -92,18 +87,13 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                   onPressed: auth.isLoading
                       ? null
                       : () async {
-                          final ctrl = context.read<AuthController>();
-                          final messenger = ScaffoldMessenger.of(context);
+                          final ctrl = Get.find<AuthController>();
                           final err = await ctrl.resendOtp(widget.email);
                           if (!mounted) return;
                           if (err != null) {
-                            messenger.showSnackBar(
-                              SnackBar(content: Text(err), backgroundColor: Colors.red),
-                            );
+                            Get.snackbar('Erreur', err, backgroundColor: Colors.red.shade100);
                           } else {
-                            messenger.showSnackBar(
-                              const SnackBar(content: Text('Code renvoyé à votre email')),
-                            );
+                            Get.snackbar('Succès', 'Code renvoyé à votre email');
                           }
                         },
                   child: const Text('Renvoyer le code'),
@@ -128,5 +118,6 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
         ),
       ),
     );
+    });
   }
 }

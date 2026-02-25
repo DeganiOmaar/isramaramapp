@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import '../../app_router.dart';
 import '../../controllers/auth_controller.dart';
 
@@ -8,8 +8,9 @@ class ChooseRoleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthController>();
-    return Scaffold(
+    return Obx(() {
+      final auth = Get.find<AuthController>();
+      return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -61,23 +62,19 @@ class ChooseRoleScreen extends StatelessWidget {
         ),
       ),
     );
+    });
+
   }
 
   Future<void> _chooseRole(BuildContext context, String role) async {
-    final auth = context.read<AuthController>();
+    final auth = Get.find<AuthController>();
     final err = await auth.chooseRole(role);
     if (!context.mounted) return;
     if (err != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(err), backgroundColor: Colors.red),
-      );
+      Get.snackbar('Erreur', err, backgroundColor: Colors.red.shade100);
       return;
     }
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const AppRouter()),
-      (route) => false,
-    );
+    Get.offAll(() => const AppRouter());
   }
 }
 

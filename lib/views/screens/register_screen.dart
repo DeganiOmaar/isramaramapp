@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
 import 'login_screen.dart';
 import 'verify_otp_screen.dart';
@@ -30,7 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    final auth = context.read<AuthController>();
+    final auth = Get.find<AuthController>();
     final email = await auth.register(
       _nomController.text.trim(),
       _prenomController.text.trim(),
@@ -39,23 +39,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
     if (!mounted) return;
     if (email != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(email), backgroundColor: Colors.red),
-      );
+      Get.snackbar('Erreur', email, backgroundColor: Colors.red.shade100);
     } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => VerifyOtpScreen(email: _emailController.text.trim()),
-        ),
-      );
+      Get.off(() => VerifyOtpScreen(email: _emailController.text.trim()));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthController>();
-    return Scaffold(
+    return Obx(() {
+      final auth = Get.find<AuthController>();
+      return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -152,10 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     Text('Déjà un compte ? ', style: TextStyle(color: Colors.grey.shade600)),
                     TextButton(
-                      onPressed: () => Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      ),
+                      onPressed: () => Get.off(() => const LoginScreen()),
                       child: const Text('Se connecter'),
                     ),
                   ],
@@ -166,5 +157,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
     );
+    });
   }
 }

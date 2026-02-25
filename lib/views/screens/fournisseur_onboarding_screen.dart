@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import '../../app_router.dart';
 import '../../controllers/auth_controller.dart';
 
@@ -63,12 +63,10 @@ class _FournisseurOnboardingScreenState extends State<FournisseurOnboardingScree
 
   Future<void> _submit() async {
     if (!_validateCurrent()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Veuillez remplir tous les champs'), backgroundColor: Colors.red),
-      );
+      Get.snackbar('Erreur', 'Veuillez remplir tous les champs', backgroundColor: Colors.red.shade100);
       return;
     }
-    final auth = context.read<AuthController>();
+    final auth = Get.find<AuthController>();
     final err = await auth.updateFournisseurInfo(
       societeNom: _societeController.text.trim(),
       produitAVendre: _produitController.text.trim(),
@@ -76,22 +74,17 @@ class _FournisseurOnboardingScreenState extends State<FournisseurOnboardingScree
     );
     if (!mounted) return;
     if (err != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(err), backgroundColor: Colors.red),
-      );
+      Get.snackbar('Erreur', err, backgroundColor: Colors.red.shade100);
     } else {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const AppRouter()),
-        (route) => false,
-      );
+      Get.offAll(() => const AppRouter());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthController>();
-    return Scaffold(
+    return Obx(() {
+      final auth = Get.find<AuthController>();
+      return Scaffold(
       appBar: AppBar(
         leading: _currentPage > 0
             ? IconButton(
@@ -163,6 +156,7 @@ class _FournisseurOnboardingScreenState extends State<FournisseurOnboardingScree
         ),
       ),
     );
+    });
   }
 }
 

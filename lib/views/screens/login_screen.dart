@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
 import 'register_screen.dart';
 
@@ -25,32 +26,29 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    final auth = context.read<AuthController>();
+    final auth = Get.find<AuthController>();
     final err = await auth.login(
       _emailController.text.trim(),
       _passwordController.text,
     );
     if (!mounted) return;
-    if (err != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(err), backgroundColor: Colors.red),
-      );
-    }
+    if (err != null) Get.snackbar('Erreur', err, backgroundColor: Colors.red.shade100);
   }
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthController>();
-    return Scaffold(
+    return Obx(() {
+      final auth = Get.find<AuthController>();
+      return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24.w),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 48),
+                SizedBox(height: 48.h),
                 Text(
                   'Connexion',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -65,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Colors.grey.shade600,
                       ),
                 ),
-                const SizedBox(height: 40),
+                SizedBox(height: 40.h),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -80,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
@@ -94,9 +92,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   validator: (v) => v == null || v.isEmpty ? 'Mot de passe requis' : null,
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: 32.h),
                 SizedBox(
-                  height: 52,
+                  height: 52.h,
                   child: ElevatedButton(
                     onPressed: auth.isLoading ? null : _submit,
                     child: auth.isLoading
@@ -114,10 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Text('Pas de compte ? ', style: TextStyle(color: Colors.grey.shade600)),
                     TextButton(
-                      onPressed: () => Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const RegisterScreen()),
-                      ),
+                      onPressed: () => Get.off(() => const RegisterScreen()),
                       child: const Text('S\'inscrire'),
                     ),
                   ],
@@ -128,5 +123,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+    });
   }
 }
